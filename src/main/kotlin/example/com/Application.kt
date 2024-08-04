@@ -9,9 +9,9 @@ import io.ktor.server.routing.* // ルーティングをインポート
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import org.jetbrains.exposed.sql.Database
-import example.com.dataaccess.MessageDataAccessor
+import example.com.dataaccess.UserDataAccessor
 import example.com.routes.*
-import example.com.routes.messagesRoutes
+import example.com.routes.usersRoutes
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -48,6 +48,6 @@ fun Application.module() {
     )
 
     routing {
-        messagesRoutes(MessageDataAccessor())
+        usersRoutes(UserDataAccessor())
     }
 }
