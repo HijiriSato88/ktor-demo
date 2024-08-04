@@ -8,8 +8,8 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserDataAccessor {
-    // メッセージを追加する
-    fun addUser(user: User) {//Messageデータクラス使用
+    // ユーザ追加
+    fun addUser(user: User) {//Userデータクラス使用
         transaction {
             UserTable.insert {
                 it[this.id] = user.id
@@ -19,19 +19,19 @@ class UserDataAccessor {
         }
     }
 
-    // メッセージを取得する
+    // ユーザ情報を取得する
     fun getUser(name: String): User? {
         var result: User? = null
         transaction {
             result = UserTable
-                .select { UserTable.name eq name }//指定したidに一致するもの探す
-                .map { convertToUser(it) }//Messageオブジェクトに変換
+                .select { UserTable.name eq name }//指定したnameに一致するもの探す
+                .map { convertToUser(it) }//Userオブジェクトに変換
                 .firstOrNull()//結果がない場合にnull返す
         }
         return result
     }
 
-    // messagesテーブルのレコードをMessageオブジェクトに変換する
+    // usersテーブルのレコードをUserオブジェクトに変換する
     private fun convertToUser(row: ResultRow): User {
         return User(
             id = row[UserTable.id],

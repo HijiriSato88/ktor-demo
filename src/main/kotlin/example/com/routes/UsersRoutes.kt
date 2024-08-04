@@ -11,14 +11,14 @@ import io.ktor.server.request.*
 
 fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
     route("/api/v1/users") {
-        // メッセージ投稿用のエンドポイント
+        // ユーザ追加用のエンドポイント
         post("/register") {
             val user = call.receive<User>()
             userDataAccessor.addUser(user)
             call.respond(HttpStatusCode.OK, mapOf("status" to "SUCCESS"))
         }
 
-        // メッセージ取得用のエンドポイント
+        // ユーザ情報取得用のエンドポイント
         get("/{name}") {
             val name = call.parameters["name"] ?:""
             val result = userDataAccessor.getUser(name)
