@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    ports:
+      - '3307:3306'
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  mysql_volume:
