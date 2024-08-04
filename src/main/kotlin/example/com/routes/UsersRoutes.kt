@@ -28,5 +28,14 @@ fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
                 call.respond(HttpStatusCode.NotFound, mapOf("status" to "Not Found"))
             }
         }
+
+        get("/all") {
+            val users = userDataAccessor.getAllUsers() // Retrieve all users from the data accessor
+            if (users.isNotEmpty()) {
+                call.respond(HttpStatusCode.OK, users)
+            } else {
+                call.respond(HttpStatusCode.NoContent, mapOf("status" to "No Users Found"))
+            }
+        }
     }
 }

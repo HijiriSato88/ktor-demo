@@ -5,6 +5,7 @@ import example.com.model.User
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserDataAccessor {
@@ -29,6 +30,14 @@ class UserDataAccessor {
                 .firstOrNull()//結果がない場合にnull返す
         }
         return result
+    }
+
+    fun getAllUsers(): List<User> {
+        return transaction {
+            UserTable
+                .selectAll()
+                .map { convertToUser(it) }
+        }
     }
 
     // usersテーブルのレコードをUserオブジェクトに変換する
