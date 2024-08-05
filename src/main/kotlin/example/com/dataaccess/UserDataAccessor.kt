@@ -48,7 +48,6 @@ class UserDataAccessor {
         }
     }
 
-
     // usersテーブルのレコードをUserオブジェクトに変換する
     private fun convertToUser(row: ResultRow): User {
         return User(

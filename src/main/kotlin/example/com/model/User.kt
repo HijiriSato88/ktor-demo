@@ -6,7 +6,3 @@ data class User(
     val mailaddress: String,
 )
 
-data class UpdateMailRequest(
-    val mailaddress: String
-)
-

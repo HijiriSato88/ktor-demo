@@ -15,7 +15,7 @@ fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
         post("/register/user") {
             val user = call.receive<User>()
             userDataAccessor.addUser(user)
-            call.respond(HttpStatusCode.OK, mapOf("status" to "SUCCESS"))
+            call.respond(HttpStatusCode.OK, mapOf("status" to "Success"))
         }
 
         // ユーザ情報取得用のエンドポイント
@@ -48,15 +48,15 @@ fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
         }
 
 
-        patch("/{id}/mail") {
+        patch("/{id}/e-mail") {
             val idParam = call.parameters["id"]
             if (idParam != null) {
                 val id = idParam.toIntOrNull()
                 if (id != null) {
-                    val updateRequest = call.receive<UpdateMailRequest>()
+                    val updateRequest = call.receive<User>()
                     val rowsUpdated = userDataAccessor.updateMailaddress(id, updateRequest.mailaddress)
                     if (rowsUpdated > 0) {
-                        call.respond(HttpStatusCode.OK, mapOf("status" to "Mail address updated successfully"))
+                        call.respond(HttpStatusCode.OK, mapOf("status" to "Success"))
                     } else {
                         call.respond(HttpStatusCode.NotFound, mapOf("status" to "User not found"))
                     }
