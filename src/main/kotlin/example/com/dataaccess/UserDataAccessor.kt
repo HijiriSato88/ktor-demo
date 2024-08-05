@@ -2,10 +2,8 @@ package example.com.dataaccess
 
 import example.com.dataaccess.table.UserTable
 import example.com.model.User
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserDataAccessor {
@@ -21,24 +19,35 @@ class UserDataAccessor {
     }
 
     // ユーザ情報を取得する
-    fun getUser(name: String): User? {
+    fun getUser(id:Int): User? {
         var result: User? = null
         transaction {
             result = UserTable
-                .select { UserTable.name eq name }//指定したnameに一致するもの探す
-                .map { convertToUser(it) }//Userオブジェクトに変換
+                .select { UserTable.id eq id }//指定したidに一致するもの探す
+                .map { convertToUser(it) }//Query型をUserオブジェクトに変換
                 .firstOrNull()//結果がない場合にnull返す
         }
         return result
     }
 
     fun getAllUsers(): List<User> {
-        return transaction {
-            UserTable
+        var result: List<User> = listOf()
+        transaction {
+            result = UserTable
                 .selectAll()
                 .map { convertToUser(it) }
         }
+        return result
     }
+
+    fun updateMailaddress(id: Int, newMailAddress: String): Int {
+        return transaction {
+            UserTable.update({ UserTable.id eq id }) {
+                it[this.mailaddress] = newMailAddress
+            }
+        }
+    }
+
 
     // usersテーブルのレコードをUserオブジェクトに変換する
     private fun convertToUser(row: ResultRow): User {

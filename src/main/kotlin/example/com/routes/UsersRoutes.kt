@@ -10,31 +10,61 @@ import example.com.dataaccess.UserDataAccessor
 import io.ktor.server.request.*
 
 fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
-    route("/api/v1/users") {
+    route("/api/v1") {
         // ユーザ追加用のエンドポイント
-        post("/register") {
+        post("/register/user") {
             val user = call.receive<User>()
             userDataAccessor.addUser(user)
             call.respond(HttpStatusCode.OK, mapOf("status" to "SUCCESS"))
         }
 
         // ユーザ情報取得用のエンドポイント
-        get("/{name}") {
-            val name = call.parameters["name"] ?:""
-            val result = userDataAccessor.getUser(name)
-            if (result != null) {
-                call.respond(HttpStatusCode.OK, result)
+        get("/{id}/user") {
+            val idParam = call.parameters["id"] // ここで idParam は String? 型
+            if (idParam != null) {
+                val id = idParam.toIntOrNull()
+                if (id != null) {
+                    val result = userDataAccessor.getUser(id) // getUser に Int を渡す
+                    if (result != null) {
+                        call.respond(HttpStatusCode.OK, result)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, mapOf("status" to "Not Found"))
+                    }
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("status" to "Invalid ID format"))
+                }
             } else {
-                call.respond(HttpStatusCode.NotFound, mapOf("status" to "Not Found"))
+                call.respond(HttpStatusCode.BadRequest, mapOf("status" to "Missing ID"))
             }
         }
 
-        get("/all") {
+        get("/all/user") {
             val users = userDataAccessor.getAllUsers() // Retrieve all users from the data accessor
             if (users.isNotEmpty()) {
                 call.respond(HttpStatusCode.OK, users)
             } else {
                 call.respond(HttpStatusCode.NoContent, mapOf("status" to "No Users Found"))
+            }
+        }
+
+
+        patch("/{id}/mail") {
+            val idParam = call.parameters["id"]
+            if (idParam != null) {
+                val id = idParam.toIntOrNull()
+                if (id != null) {
+                    val updateRequest = call.receive<UpdateMailRequest>()
+                    val rowsUpdated = userDataAccessor.updateMailaddress(id, updateRequest.mailaddress)
+                    if (rowsUpdated > 0) {
+                        call.respond(HttpStatusCode.OK, mapOf("status" to "Mail address updated successfully"))
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, mapOf("status" to "User not found"))
+                    }
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("status" to "Invalid ID format"))
+                }
+            } else {
+                call.respond(HttpStatusCode.BadRequest, mapOf("status" to "Missing ID"))
             }
         }
     }

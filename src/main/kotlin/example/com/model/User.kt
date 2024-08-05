@@ -5,3 +5,8 @@ data class User(
     val name: String,
     val mailaddress: String,
 )
+
+data class UpdateMailRequest(
+    val mailaddress: String
+)
+

@@ -1,8 +1,6 @@
 package example.com
 
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.* // CORS機能をインポート
 import io.ktor.server.routing.* // ルーティングをインポート
@@ -25,11 +23,11 @@ fun Application.module() {
     }
 
     install(CORS) {
-        allowMethod(HttpMethod.Options) // allowMethodを使用
+        allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Patch)
-        allowHeader(HttpHeaders.Authorization) // allowHeaderを使用
+        allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowCredentials = true
         anyHost() // 本番環境では特定のホストに置き換えることを検討してください
