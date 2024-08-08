@@ -48,6 +48,12 @@ class UserDataAccessor {
         }
     }
 
+    fun deleteUser(id: Int): Int{
+        return transaction {
+            UserTable.deleteWhere { UserTable.id eq id }
+        }
+    }
+
     // usersテーブルのレコードをUserオブジェクトに変換する
     private fun convertToUser(row: ResultRow): User {
         return User(
