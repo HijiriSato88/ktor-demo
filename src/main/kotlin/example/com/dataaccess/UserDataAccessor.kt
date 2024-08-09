@@ -14,6 +14,7 @@ class UserDataAccessor {
                 it[this.id] = user.id
                 it[this.name] = user.name
                 it[this.mailaddress] = user.mailaddress
+                it[this.password] = user.password
             }
         }
     }
@@ -54,12 +55,22 @@ class UserDataAccessor {
         }
     }
 
+    fun findUserByCredentials(mailaddress: String, password: String): User? {
+        return transaction {
+            UserTable
+                .select { UserTable.mailaddress eq mailaddress and (UserTable.password eq password) }
+                .map { convertToUser(it) }
+                .firstOrNull()
+        }
+    }
+
     // usersテーブルのレコードをUserオブジェクトに変換する
     private fun convertToUser(row: ResultRow): User {
         return User(
             id = row[UserTable.id],
             name = row[UserTable.name],
-            mailaddress = row[UserTable.mailaddress]
+            mailaddress = row[UserTable.mailaddress],
+            password = row[UserTable.password]
         )
     }
 }

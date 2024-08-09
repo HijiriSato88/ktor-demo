@@ -10,6 +10,10 @@ import org.jetbrains.exposed.sql.Database
 import example.com.dataaccess.UserDataAccessor
 import example.com.routes.*
 import example.com.routes.usersRoutes
+import io.ktor.server.auth.* // Authenticationプラグインの正しいインポート
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.response.*
+
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -31,6 +35,19 @@ fun Application.module() {
         allowHeader(HttpHeaders.ContentType)
         allowCredentials = true
         anyHost() // 本番環境では特定のホストに置き換えることを検討してください
+    }
+
+    install(Authentication) {
+        basic {
+            validate { credentials ->
+                val user = UserDataAccessor().findUserByCredentials(credentials.name, credentials.password)
+                if (user != null) {
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+        }
     }
 
     // データベースのホスト名と接続情報を環境変数から取得

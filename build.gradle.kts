@@ -33,6 +33,7 @@ dependencies {
     implementation("io.ktor:ktor-server-config-yaml:2.3.12")
     implementation("mysql:mysql-connector-java:8.0.30")
     implementation("io.ktor:ktor-server-jetty:2.3.12") // Add this line for Jetty
+    implementation("io.ktor:ktor-server-auth:2.3.12") // 認証プラグイン
 
     //Exposed
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")

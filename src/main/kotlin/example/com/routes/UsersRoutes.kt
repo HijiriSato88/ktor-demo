@@ -7,10 +7,19 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import example.com.model.*
 import example.com.dataaccess.UserDataAccessor
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 
 fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
     route("/api/v1") {
+
+        authenticate {
+            get("/authenticated") {
+                val user = call.authentication.principal<UserIdPrincipal>()
+                call.respondText("authenticated id=${user?.name}")
+            }
+        }
+
         // ユーザ追加用のエンドポイント
         post("/register/user") {
             val user = call.receive<User>()
@@ -74,7 +83,6 @@ fun Route.usersRoutes(userDataAccessor: UserDataAccessor) {
                 call.respond(HttpStatusCode.BadRequest, mapOf("status" to "Invalid ID format"))
             }
         }
-
 
     }
 }
